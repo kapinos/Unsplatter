@@ -30,7 +30,7 @@ class PhotosAPI: NSObject {
     }
     
     class func fetchPhotos(completion: @escaping ([Photo]?) -> ()) {
-        let url = "\(API.sitePath)/photos/?client_id=\(API.clientId)"
+        let url = "\(API.sitePath)/photos/?per_page=30&client_id=\(API.clientId)"
         
         var photos: [Photo]?
         API.photos.fetch(path: url) { data in

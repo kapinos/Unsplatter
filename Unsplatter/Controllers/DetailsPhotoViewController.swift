@@ -48,7 +48,7 @@ class DetailsPhotoViewController: UIViewController {
     }
 }
 
-private extension DetailsImageViewController {
+private extension DetailsPhotoViewController {
     func fetchParametersIntoUI() {
         guard let details = photoDetails else { return }
         
@@ -65,7 +65,6 @@ private extension DetailsImageViewController {
             dateFormatter.dateFormat = "dd-MM-yyyy"
             self.title = "created at: \(dateFormatter.string(from: date))"
         }
-        
         downloadAndShowPhoto(from: details.urls.regular, imageView: photoImageView)
         downloadAndShowPhoto(from: details.author.profileImage.small, imageView: authorProfileImageView)
     }

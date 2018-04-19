@@ -97,7 +97,7 @@ extension PhotosCollectionViewController {
 extension PhotosCollectionViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.showPhotoDetailsSegue {
-            guard let destination = segue.destination as? DetailsImageViewController,
+            guard let destination = segue.destination as? DetailsPhotoViewController,
                 let photo = sender as? Photo else { return }
             destination.photoId = photo.id
         }
