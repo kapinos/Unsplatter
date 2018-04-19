@@ -11,8 +11,7 @@ import UIKit
 class PhotosCollectionViewController: UICollectionViewController {
     
     // MARK: - Properties
-    private var token: NSKeyValueObservation?
-//    private var itemWidth: CGFloat?
+    private var photos: [Photo] = []
     private var layout: PhotosLayout?
     
     // MARK: - Lifecycle
@@ -24,19 +23,32 @@ class PhotosCollectionViewController: UICollectionViewController {
             self.layout?.delegate = self
         }
         
-        self.title = "Photos"
         collectionView?.contentInset = UIEdgeInsets(top: 23, left: 16, bottom: 10, right: 16)
+        
+        PhotosAPI.fetchPhotos(completion: { [weak self] photos in
+            if let ph = photos {
+                self?.photos = ph
+                DispatchQueue.main.async {
+                    self?.collectionView?.reloadData()
+                }
+            } else {
+                print("Something went wrong")
+            }
+        })
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        token = PhotosAPI.service.observe(\.photos) { _, _ in
-            DispatchQueue.main.async {
-                self.collectionView?.reloadData()
-            }
-        }
-        PhotosAPI.service.fetchPhotos()
+        // Hide the navigation bar on the this view controller
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Show the navigation bar on other view controllers
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -47,26 +59,48 @@ class PhotosCollectionViewController: UICollectionViewController {
 // MARK: UICollectionViewDataSource
 extension PhotosCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return PhotosAPI.service.photos.count
+        return photos.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.photoCellInCollectionView, for: indexPath) as! PhotoCell
-        cell.render(photo: PhotosAPI.service.photos[indexPath.row])
+        cell.render(photo: photos[indexPath.row])
         return cell
     }
 }
 
+// MARK: - PhotosLayoutDelegate
 extension PhotosCollectionViewController: PhotosLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath:IndexPath) -> CGFloat {
         
         guard let itemWidth = countItemWidth() else {
-            print("5%") // LOG
-            return PhotosAPI.service.photos[indexPath.item].height * 0.05
+            // get proportional photo height - 5%
+            return photos[indexPath.item].height * 0.05
         }
         
-        let itemHeight = PhotosAPI.service.photos[indexPath.item].height * itemWidth / PhotosAPI.service.photos[indexPath.item].width
+        let itemHeight = photos[indexPath.item].height * itemWidth / photos[indexPath.item].width
         return itemHeight
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension PhotosCollectionViewController {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if (collectionView.cellForItem(at: indexPath) as? PhotoCell) != nil {
+            let photo = photos[indexPath.row]
+            performSegue(withIdentifier: Constants.showPhotoDetailsSegue, sender: photo)
+        }
+    }
+}
+
+// MARK: - Navigation
+extension PhotosCollectionViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Constants.showPhotoDetailsSegue {
+            guard let destination = segue.destination as? DetailsImageViewController,
+                let photo = sender as? Photo else { return }
+            destination.photoId = photo.id
+        }
     }
 }
 
@@ -78,10 +112,8 @@ private extension PhotosCollectionViewController {
         var width: CGFloat = 0.0
         if UIDevice.current.orientation.isLandscape {
             width = (cv.frame.width - (cv.contentInset.left + cv.contentInset.right + 10)) / CGFloat(Constants.numberOfColumnsForLandscapeMode)
-            print("landscape, w = \(width)")  // LOG
         } else if UIDevice.current.orientation.isPortrait {
             width = (cv.frame.width - (cv.contentInset.left + cv.contentInset.right + 10)) / CGFloat(Constants.numberOfColumnsForPortraitMode)
-            print("portrait, w = \(width)")  // LOG
         }
         return width
     }

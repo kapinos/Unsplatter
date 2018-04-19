@@ -14,4 +14,7 @@ enum Constants {
     // number for colums for different modes
     static let numberOfColumnsForLandscapeMode = 3
     static let numberOfColumnsForPortraitMode  = 2
+    
+    // segues
+    static let showPhotoDetailsSegue = "showPhotoDetailsSegue"
 }

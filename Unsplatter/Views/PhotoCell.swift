@@ -15,7 +15,7 @@ class PhotoCell: UICollectionViewCell {
     
     private var task: URLSessionDataTask?
     
-    func render(photo: Photo) {
+    func render(photo: Photo) {        
         guard let url = URL(string: photo.urls.thumb) else { return }
         
         downloadPhoto(from: url)

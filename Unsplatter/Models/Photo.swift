@@ -10,7 +10,7 @@ import UIKit
 
 class Photo: NSObject, Codable {
     let id:     String
-    let urls:   URLS
+    let urls:   Urls
     let width:  CGFloat
     let height: CGFloat
 
@@ -21,7 +21,7 @@ class Photo: NSObject, Codable {
         case height
     }
     
-    init(id: String, urls: URLS, width: CGFloat, height: CGFloat) {
+    init(id: String, urls: Urls, width: CGFloat, height: CGFloat) {
         self.id     = id
         self.urls   = urls
         self.width  = width
@@ -29,20 +29,3 @@ class Photo: NSObject, Codable {
     }
 }
 
-class URLS: NSObject, Codable {
-    let regular: String
-    let thumb:   String
-    let small:   String
-    
-    enum CodingKeys: String, CodingKey {
-        case regular
-        case thumb
-        case small
-    }
-    
-    init(regular: String, thumb: String, small: String) {
-        self.regular = regular
-        self.thumb   = thumb
-        self.small   = small
-    }
-}

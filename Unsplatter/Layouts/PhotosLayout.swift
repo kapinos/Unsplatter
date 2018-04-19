@@ -47,10 +47,8 @@ class PhotosLayout: UICollectionViewLayout {
         var numberOfColumns = Constants.numberOfColumnsForPortraitMode
         
         if UIDevice.current.orientation.isLandscape {
-            print("prepare: landscape") // LOG
             numberOfColumns = Constants.numberOfColumnsForLandscapeMode
         } else if UIDevice.current.orientation.isPortrait {
-            print("prepare: portrait")  // LOG
             numberOfColumns = Constants.numberOfColumnsForPortraitMode
         }
         // count y-position for every column

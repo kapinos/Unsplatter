@@ -11,13 +11,15 @@
 		5D86C101208763AD0021817E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D86C0FF208763AD0021817E /* Main.storyboard */; };
 		5D86C103208763B10021817E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D86C102208763B10021817E /* Assets.xcassets */; };
 		5D86C106208763B20021817E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D86C104208763B20021817E /* LaunchScreen.storyboard */; };
-		5D86C10F208764470021817E /* DetailsImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C10E208764470021817E /* DetailsImageViewController.swift */; };
+		5D86C10F208764470021817E /* DetailsPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C10E208764470021817E /* DetailsPhotoViewController.swift */; };
 		5D86C11820879C8A0021817E /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C11720879C8A0021817E /* Photo.swift */; };
-		5D86C11A20879DAB0021817E /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C11920879DAB0021817E /* Services.swift */; };
+		5D86C11A20879DAB0021817E /* PhotosAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C11920879DAB0021817E /* PhotosAPI.swift */; };
 		5D86C11D2087A25F0021817E /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C11C2087A25F0021817E /* PhotoCell.swift */; };
 		5D86C1212087B6210021817E /* PhotosLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1202087B6210021817E /* PhotosLayout.swift */; };
 		5D86C1242087B7090021817E /* PhotosCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1232087B7090021817E /* PhotosCollectionViewController.swift */; };
 		5D86C1262087B8360021817E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1252087B8360021817E /* Constants.swift */; };
+		5D86C1282088D0800021817E /* PhotoDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1272088D0800021817E /* PhotoDetails.swift */; };
+		5D86C12A2088FF630021817E /* StructuresForModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1292088FF630021817E /* StructuresForModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,13 +29,15 @@
 		5D86C102208763B10021817E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D86C105208763B20021817E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5D86C107208763B20021817E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5D86C10E208764470021817E /* DetailsImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsImageViewController.swift; sourceTree = "<group>"; };
+		5D86C10E208764470021817E /* DetailsPhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsPhotoViewController.swift; sourceTree = "<group>"; };
 		5D86C11720879C8A0021817E /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
-		5D86C11920879DAB0021817E /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
+		5D86C11920879DAB0021817E /* PhotosAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosAPI.swift; sourceTree = "<group>"; };
 		5D86C11C2087A25F0021817E /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		5D86C1202087B6210021817E /* PhotosLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosLayout.swift; sourceTree = "<group>"; };
 		5D86C1232087B7090021817E /* PhotosCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosCollectionViewController.swift; sourceTree = "<group>"; };
 		5D86C1252087B8360021817E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5D86C1272088D0800021817E /* PhotoDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetails.swift; sourceTree = "<group>"; };
+		5D86C1292088FF630021817E /* StructuresForModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuresForModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +95,8 @@
 			isa = PBXGroup;
 			children = (
 				5D86C11720879C8A0021817E /* Photo.swift */,
+				5D86C1272088D0800021817E /* PhotoDetails.swift */,
+				5D86C1292088FF630021817E /* StructuresForModel.swift */,
 				5D86C1252087B8360021817E /* Constants.swift */,
 			);
 			path = Models;
@@ -100,7 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				5D86C1232087B7090021817E /* PhotosCollectionViewController.swift */,
-				5D86C10E208764470021817E /* DetailsImageViewController.swift */,
+				5D86C10E208764470021817E /* DetailsPhotoViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -117,7 +123,7 @@
 		5D86C11B20879DB30021817E /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				5D86C11920879DAB0021817E /* Services.swift */,
+				5D86C11920879DAB0021817E /* PhotosAPI.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -202,9 +208,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D86C11D2087A25F0021817E /* PhotoCell.swift in Sources */,
-				5D86C10F208764470021817E /* DetailsImageViewController.swift in Sources */,
+				5D86C10F208764470021817E /* DetailsPhotoViewController.swift in Sources */,
 				5D86C1212087B6210021817E /* PhotosLayout.swift in Sources */,
-				5D86C11A20879DAB0021817E /* Services.swift in Sources */,
+				5D86C11A20879DAB0021817E /* PhotosAPI.swift in Sources */,
+				5D86C1282088D0800021817E /* PhotoDetails.swift in Sources */,
+				5D86C12A2088FF630021817E /* StructuresForModel.swift in Sources */,
 				5D86C0FC208763AD0021817E /* AppDelegate.swift in Sources */,
 				5D86C11820879C8A0021817E /* Photo.swift in Sources */,
 				5D86C1242087B7090021817E /* PhotosCollectionViewController.swift in Sources */,
