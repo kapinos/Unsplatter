@@ -12,14 +12,16 @@ class PhotosCollectionViewController: UICollectionViewController {
     
     // MARK: - Properties
     private var token: NSKeyValueObservation?
-    private var itemWidth: CGFloat?
+//    private var itemWidth: CGFloat?
+    private var layout: PhotosLayout?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         if let layout = collectionView?.collectionViewLayout as? PhotosLayout {
-            layout.delegate = self
+            self.layout = layout
+            self.layout?.delegate = self
         }
         
         self.title = "Photos"
@@ -37,12 +39,8 @@ class PhotosCollectionViewController: UICollectionViewController {
         PhotosAPI.service.fetchPhotos()
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-
-        // get the width for photo
-        guard let cv = collectionView else { return }
-        itemWidth = (cv.frame.width - (cv.contentInset.left + cv.contentInset.right + 10)) / CGFloat(Constants.numberOfColumns)
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        layout?.invalidateLayout()
     }
 }
 
@@ -61,14 +59,33 @@ extension PhotosCollectionViewController {
 
 extension PhotosCollectionViewController: PhotosLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath:IndexPath) -> CGFloat {
-        guard let itemWidth = itemWidth else {
+        
+        guard let itemWidth = countItemWidth() else {
+            print("5%") // LOG
             return PhotosAPI.service.photos[indexPath.item].height * 0.05
         }
+        
         let itemHeight = PhotosAPI.service.photos[indexPath.item].height * itemWidth / PhotosAPI.service.photos[indexPath.item].width
         return itemHeight
     }
 }
 
+// MARK: - Private
+private extension PhotosCollectionViewController {
+    private func countItemWidth() -> CGFloat? {
+        guard let cv = collectionView else { return 0.0 }
+        
+        var width: CGFloat = 0.0
+        if UIDevice.current.orientation.isLandscape {
+            width = (cv.frame.width - (cv.contentInset.left + cv.contentInset.right + 10)) / CGFloat(Constants.numberOfColumnsForLandscapeMode)
+            print("landscape, w = \(width)")  // LOG
+        } else if UIDevice.current.orientation.isPortrait {
+            width = (cv.frame.width - (cv.contentInset.left + cv.contentInset.right + 10)) / CGFloat(Constants.numberOfColumnsForPortraitMode)
+            print("portrait, w = \(width)")  // LOG
+        }
+        return width
+    }
+}
 
 
 

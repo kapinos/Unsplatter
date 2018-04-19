@@ -16,8 +16,7 @@ class PhotosLayout: UICollectionViewLayout {
 
     weak var delegate: PhotosLayoutDelegate!
     
-    // propertis for configuring the layout
-    private var numberOfColumns = Constants.numberOfColumns
+    // properties for configuring the layout
     private var cellPadding: CGFloat = 6
     
     // array for cache calculated attributes
@@ -41,8 +40,18 @@ class PhotosLayout: UICollectionViewLayout {
     // calculate an instance of CollectionViewLayoutAttributes for every item in layout
     override func prepare() {
 
-        guard cache.isEmpty == true, let collectionView = collectionView else {
+        guard let collectionView = collectionView else {
             return
+        }
+        
+        var numberOfColumns = Constants.numberOfColumnsForPortraitMode
+        
+        if UIDevice.current.orientation.isLandscape {
+            print("prepare: landscape") // LOG
+            numberOfColumns = Constants.numberOfColumnsForLandscapeMode
+        } else if UIDevice.current.orientation.isPortrait {
+            print("prepare: portrait")  // LOG
+            numberOfColumns = Constants.numberOfColumnsForPortraitMode
         }
         // count y-position for every column
         let columnWidth = contentWidth / CGFloat(numberOfColumns)

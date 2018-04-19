@@ -11,5 +11,7 @@ import Foundation
 enum Constants {
     static let photoCellInCollectionView = "PhotoCell"
     
-    static let numberOfColumns = 2
+    // number for colums for different modes
+    static let numberOfColumnsForLandscapeMode = 3
+    static let numberOfColumnsForPortraitMode  = 2
 }
