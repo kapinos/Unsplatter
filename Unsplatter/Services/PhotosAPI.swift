@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Alamofire
 
 class PhotosAPI: NSObject {
     
@@ -30,15 +31,33 @@ class PhotosAPI: NSObject {
     }
     
     class func fetchPhotos(completion: @escaping ([Photo]?) -> ()) {
-        let url = "\(API.sitePath)/photos/?per_page=30&client_id=\(API.clientId)"
-        
+
         var photos: [Photo]?
-        API.photos.fetch(path: url) { data in
-            photos = try? JSONDecoder().decode([Photo].self, from: data)
-            completion(photos)
+        
+        let url = "\(API.sitePath)/photos/?client_id=\(API.clientId)"
+        let parameters: [String: Any] = [
+            "per_page": 30
+        ]
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).responseData { response in
+            print("Request: \(String(describing: response.request))")   // original url request
+            print("Response: \(String(describing: response.response))") // http url response
+            print("Result: \(response.result)")                         // response serialization result
+            
+            // FIXME: - Handle 'Result'
+            
+            // FIXME: - Get 'x-ratelimit-limit' from Headers
+            if let headers = response.response?.allHeaderFields {
+                print("headers: \(headers)")
+            }
+            
+            if let data = response.data {
+                photos = try? JSONDecoder().decode([Photo].self, from: data)
+                completion(photos)
+            }
         }
     }
     
+    // FIXME: - Rewrite to Alamofire
     class func fetchDetailsPhoto(by id: String, completion: @escaping (PhotoDetails?) -> ()) {
         let formatter = ISO8601DateFormatter()
         let customDateHandler: (Decoder) throws -> Date = { decoder in

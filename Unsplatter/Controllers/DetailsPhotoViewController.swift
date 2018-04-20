@@ -91,5 +91,5 @@ private extension DetailsPhotoViewController {
         likesLabel.layer.cornerRadius = 4.0
     }
     
-    // FIXME: Add donload button handler
+    // FIXME: Add download button handler
 }
