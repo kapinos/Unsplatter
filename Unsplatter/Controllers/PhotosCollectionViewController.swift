@@ -25,14 +25,21 @@ class PhotosCollectionViewController: UICollectionViewController {
         
         collectionView?.contentInset = UIEdgeInsets(top: 23, left: 16, bottom: 10, right: 16)
         
-        PhotosAPI.fetchPhotos(completion: { [weak self] photos in
-            if let ph = photos {
-                self?.photos = ph
-                DispatchQueue.main.async {
-                    self?.collectionView?.reloadData()
-                }
-            } else {
+        PhotosAPI.fetchPhotos(pageNumber: 1, completion: { [weak self] photos, error  in
+            guard error == nil else {
+                //TODO: - show alert
+                print(error!)
+                return
+            }
+            
+            guard let photos = photos else {
                 print("Something went wrong")
+                return
+            }
+            
+            self?.photos = photos
+            DispatchQueue.main.async {
+                self?.collectionView?.reloadData()
             }
         })
     }
@@ -72,7 +79,6 @@ extension PhotosCollectionViewController {
 // MARK: - PhotosLayoutDelegate
 extension PhotosCollectionViewController: PhotosLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath:IndexPath) -> CGFloat {
-        
         guard let itemWidth = countItemWidth() else {
             // get proportional photo height - 5%
             return photos[indexPath.item].height * 0.05
@@ -87,8 +93,10 @@ extension PhotosCollectionViewController: PhotosLayoutDelegate {
 extension PhotosCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if (collectionView.cellForItem(at: indexPath) as? PhotoCell) != nil {
+            // get selected image and photo.id
+            let image = (collectionView.cellForItem(at: indexPath) as? PhotoCell)?.image
             let photo = photos[indexPath.row]
-            performSegue(withIdentifier: Constants.showPhotoDetailsSegue, sender: photo)
+            performSegue(withIdentifier: Constants.showPhotoDetailsSegue, sender: (image, photo))
         }
     }
 }
@@ -98,8 +106,9 @@ extension PhotosCollectionViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == Constants.showPhotoDetailsSegue {
             guard let destination = segue.destination as? DetailsPhotoViewController,
-                let photo = sender as? Photo else { return }
-            destination.photoId = photo.id
+                let data = sender as? (image: UIImage, photo: Photo) else { return }
+            destination.photoId = data.photo.id
+            destination.photoImageSmall = data.image
         }
     }
 }

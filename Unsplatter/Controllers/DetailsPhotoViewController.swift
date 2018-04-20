@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Alamofire
+import AlamofireImage
 
 class DetailsPhotoViewController: UIViewController {
 
@@ -20,8 +22,10 @@ class DetailsPhotoViewController: UIViewController {
     
     // MARK: - Properties
     var photoId: String?
-    private var task: URLSessionDataTask?
+    var photoImageSmall: UIImage?
+    
     private var photoDetails: PhotoDetails?
+    private var blurEffectView: UIView?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -32,17 +36,29 @@ class DetailsPhotoViewController: UIViewController {
         photoImageView.layer.masksToBounds = true
         authorProfileImageView.layer.masksToBounds = true
         authorProfileImageView.layer.cornerRadius = 0.5 * authorProfileImageView.bounds.size.width
-        configureLabels()
         
-        guard let id = photoId else { return }
-        PhotosAPI.fetchDetailsPhoto(by: id) { [weak self] details in
-            if let det = details {
-                self?.photoDetails = det
-                DispatchQueue.main.async {
-                    self?.fetchParametersIntoUI()
-                }
-            } else {
+        configureLabels()
+        configureBlurEffectView()
+        
+        guard let id = photoId, let image = photoImageSmall else { return }
+        self.photoImageView.image = image
+
+        
+        // fetch info about photo
+        PhotosAPI.fetchPhotoDetails(by: id) { [weak self] details, error in
+            guard error == nil else {
+                // TODO: - show alert
+                print(error!)
+                return
+            }
+            
+            guard let details = details else {
                 print("Something went wrong")
+                return
+            }
+            self?.photoDetails = details
+            DispatchQueue.main.async {
+                self?.fetchParametersIntoUI()
             }
         }
     }
@@ -56,8 +72,9 @@ private extension DetailsPhotoViewController {
         usernameLabel.text  = "@\(details.author.username)"
         likesLabel.text     = "  ❤️ \(details.likesCount)  "
         
-        if let location     = details.location?.title {
-            locationButton.setTitle("📍\(location)", for: .normal)
+        if let location = details.location?.title {
+            let title = !location.isEmpty ? "📍\(location)" : ""
+            locationButton.setTitle(title, for: .normal)
         }
         
         if let date = details.created {
@@ -71,18 +88,16 @@ private extension DetailsPhotoViewController {
     
     private func downloadAndShowPhoto(from url: String?, imageView: UIImageView) {
         guard let urlPath = URL(string: url!) else { return }
-        let task = URLSession.shared.dataTask(with: urlPath) { data, response, error in
-            guard let data = data, error == nil else { return }
+        
+        Alamofire.request(urlPath).responseImage { response in
+            guard let image = response.result.value else { return }
             DispatchQueue.main.async {
-                imageView.alpha = 0
-                imageView.image = UIImage(data: data)
+                imageView.image = image
                 UIView.animate(withDuration: 0.25, animations: {
-                    imageView.alpha = 1.0
+                    self.blurEffectView?.alpha = 0
                 })
             }
         }
-        task.resume()
-        self.task = task
     }
     
     func configureLabels() {
@@ -91,5 +106,13 @@ private extension DetailsPhotoViewController {
         likesLabel.layer.cornerRadius = 4.0
     }
     
-    // FIXME: Add download button handler
+    func configureBlurEffectView() {
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.light)
+        blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView?.frame = photoImageView.bounds
+        blurEffectView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        photoImageView?.addSubview(blurEffectView!)
+    }
+    
+    // TODO: Add download button handler
 }

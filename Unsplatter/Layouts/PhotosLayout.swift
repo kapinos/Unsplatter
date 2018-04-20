@@ -60,6 +60,8 @@ class PhotosLayout: UICollectionViewLayout {
         var column = 0
         var yOffset = [CGFloat](repeating: 0, count: numberOfColumns)
         
+        cache.removeAll()
+        contentHeight = 0.0
         // count height, frame, y-offset for every section in collectionView
         for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
             
