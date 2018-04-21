@@ -13,12 +13,13 @@ import AlamofireImage
 class DetailsPhotoViewController: UIViewController {
 
     // MARK: - IBOutlets
-    @IBOutlet weak var authorLabel: UILabel!
-    @IBOutlet weak var profileNameLabel: UILabel!
-    @IBOutlet weak var authorProfileImageView: UIImageView!
-    @IBOutlet weak var likesLabel: UILabel!
-    @IBOutlet weak var photoImageView: UIImageView!
-    @IBOutlet weak var locationButton: UIButton!
+    @IBOutlet private weak var authorLabel: UILabel!
+    @IBOutlet private weak var profileNameLabel: UILabel!
+    @IBOutlet private weak var authorProfileImageView: UIImageView!
+    @IBOutlet private weak var likesLabel: UILabel!
+    @IBOutlet private weak var photoImageView: UIImageView!
+    @IBOutlet private weak var locationButton: UIButton!
+    @IBOutlet private weak var progressView: UIProgressView!
     
     // MARK: - Properties
     var photoId: String?
@@ -35,15 +36,66 @@ class DetailsPhotoViewController: UIViewController {
         
         configureLabels()
         configureAuthorImageView()
-        
+        configureProgressView()
         guard let photoId = photoId, let priorImage = photoPriorImage else { return }
         configurePhotoImageView(image: priorImage)
 
         fetchDetailsPhoto(by: photoId)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Hide the navigation bar on the this view controller
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
 }
 
+// MARK: - User Interactions
+extension DetailsPhotoViewController {
+    @IBAction func downloadBarButtonPressed(_ sender: UIBarButtonItem) {
+        downloadImage { image in
+            UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        }
+    }
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            // got back an error
+            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        } else {
+            self.title = "saved successfully"
+            progressView.tintColor = .green
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2, execute: {
+                self.title = ""
+                self.configureProgressView()
+            })
+        }
+    }
+}
+
+
 private extension DetailsPhotoViewController {
+    // download opener image into photo gallery
+    func downloadImage(completion: @escaping (UIImage) -> ()) {
+        progressView.isHidden = false
+        
+        guard let details = photoDetails else { return }
+        guard let downloadURL = details.links?.download else { return }
+        
+        Alamofire.request(downloadURL).responseImage { response in
+            guard let imageResult = response.result.value else { return }
+            completion(imageResult)
+            }.downloadProgress(queue: DispatchQueue.global(qos: .utility)) { progress in
+                DispatchQueue.main.async {
+                    self.progressView.progress = Float(progress.fractionCompleted)
+                }
+        }
+    }
+    
     // fetch info about photo
     func fetchDetailsPhoto(by id: String) {
         PhotosAPI.fetchPhotoDetails(by: id) { [weak self] details, error in
@@ -135,5 +187,9 @@ private extension DetailsPhotoViewController {
         photoImageView.addSubview(blurEffectView!)
     }
     
-    // TODO: Add download button handler
+    func configureProgressView() {
+        progressView.progress = 0.0
+        progressView.isHidden = true
+        progressView.tintColor = UIColor.Blue.defaultBlue
+    }
 }

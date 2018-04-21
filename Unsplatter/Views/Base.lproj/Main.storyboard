@@ -69,7 +69,7 @@
             </objects>
             <point key="canvasLocation" x="1677.5999999999999" y="-55.322338830584712"/>
         </scene>
-        <!--Details Photo View Controller-->
+        <!--Title-->
         <scene sceneID="FJU-dc-F49">
             <objects>
                 <viewController id="bAk-cF-ETL" customClass="DetailsPhotoViewController" customModule="Unsplatter" customModuleProvider="target" sceneMemberID="viewController">
@@ -77,6 +77,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="bDA-eN-V7Z">
+                                <rect key="frame" x="0.0" y="64" width="375" height="3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="3" id="Kqq-Nj-ZhT"/>
+                                </constraints>
+                            </progressView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="o6a-XW-ZtW">
                                 <rect key="frame" x="15" y="79" width="345" height="573"/>
                                 <subviews>
@@ -142,11 +148,21 @@
                         <constraints>
                             <constraint firstItem="o6a-XW-ZtW" firstAttribute="leading" secondItem="2qI-LI-tZq" secondAttribute="leading" constant="15" id="Ckf-jP-RRN"/>
                             <constraint firstItem="o6a-XW-ZtW" firstAttribute="top" secondItem="2qI-LI-tZq" secondAttribute="top" constant="15" id="PkI-M5-j3b"/>
+                            <constraint firstItem="bDA-eN-V7Z" firstAttribute="leading" secondItem="2qI-LI-tZq" secondAttribute="leading" id="SzA-Oc-gYm"/>
+                            <constraint firstItem="2qI-LI-tZq" firstAttribute="trailing" secondItem="bDA-eN-V7Z" secondAttribute="trailing" id="ZIc-2c-alf"/>
                             <constraint firstItem="2qI-LI-tZq" firstAttribute="bottom" secondItem="o6a-XW-ZtW" secondAttribute="bottom" constant="15" id="aVz-WC-to7"/>
+                            <constraint firstItem="bDA-eN-V7Z" firstAttribute="top" secondItem="2qI-LI-tZq" secondAttribute="top" id="oDN-Ax-MA1"/>
                             <constraint firstItem="2qI-LI-tZq" firstAttribute="trailing" secondItem="o6a-XW-ZtW" secondAttribute="trailing" constant="15" id="zdw-CN-2Rh"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2qI-LI-tZq"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Title" id="gDq-XO-u1Y">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="downloadPhoto" style="plain" id="teX-0d-G0c">
+                            <connections>
+                                <action selector="downloadBarButtonPressed:" destination="bAk-cF-ETL" id="CmZ-Xs-vw5"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="authorLabel" destination="3gM-ow-KRc" id="WKj-fg-e2g"/>
                         <outlet property="authorProfileImageView" destination="Z2g-UO-e2u" id="dJm-Eh-0Xd"/>
@@ -154,6 +170,7 @@
                         <outlet property="locationButton" destination="PC8-9m-sVt" id="dFP-9I-dUX"/>
                         <outlet property="photoImageView" destination="89s-ht-GD0" id="nZr-MA-00Z"/>
                         <outlet property="profileNameLabel" destination="ZAP-2K-ixp" id="kJS-aN-vXa"/>
+                        <outlet property="progressView" destination="bDA-eN-V7Z" id="fKm-Rc-9aB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EB7-D0-osq" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -180,6 +197,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="downloadPhoto" width="44" height="44"/>
         <image name="no-photo" width="1200" height="800"/>
     </resources>
 </document>
