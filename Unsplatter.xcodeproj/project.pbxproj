@@ -19,7 +19,7 @@
 		5D86C1242087B7090021817E /* PhotosCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1232087B7090021817E /* PhotosCollectionViewController.swift */; };
 		5D86C1262087B8360021817E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1252087B8360021817E /* Constants.swift */; };
 		5D86C1282088D0800021817E /* PhotoDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1272088D0800021817E /* PhotoDetails.swift */; };
-		5D86C12A2088FF630021817E /* StructuresForModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1292088FF630021817E /* StructuresForModel.swift */; };
+		5D86C12A2088FF630021817E /* ClassesForModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86C1292088FF630021817E /* ClassesForModel.swift */; };
 		8A91773FB45F16ECAA96C45B /* Pods_Unsplatter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BCD320A06CFE9F69507219 /* Pods_Unsplatter.framework */; };
 /* End PBXBuildFile section */
 
@@ -39,7 +39,7 @@
 		5D86C1232087B7090021817E /* PhotosCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosCollectionViewController.swift; sourceTree = "<group>"; };
 		5D86C1252087B8360021817E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		5D86C1272088D0800021817E /* PhotoDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetails.swift; sourceTree = "<group>"; };
-		5D86C1292088FF630021817E /* StructuresForModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuresForModel.swift; sourceTree = "<group>"; };
+		5D86C1292088FF630021817E /* ClassesForModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassesForModel.swift; sourceTree = "<group>"; };
 		B5BCD320A06CFE9F69507219 /* Pods_Unsplatter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Unsplatter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C84687EBE0FC1D6981D728 /* Pods-Unsplatter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Unsplatter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Unsplatter/Pods-Unsplatter.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -103,7 +103,7 @@
 			children = (
 				5D86C11720879C8A0021817E /* Photo.swift */,
 				5D86C1272088D0800021817E /* PhotoDetails.swift */,
-				5D86C1292088FF630021817E /* StructuresForModel.swift */,
+				5D86C1292088FF630021817E /* ClassesForModel.swift */,
 				5D86C1252087B8360021817E /* Constants.swift */,
 			);
 			path = Models;
@@ -279,7 +279,7 @@
 				5D86C1212087B6210021817E /* PhotosLayout.swift in Sources */,
 				5D86C11A20879DAB0021817E /* PhotosAPI.swift in Sources */,
 				5D86C1282088D0800021817E /* PhotoDetails.swift in Sources */,
-				5D86C12A2088FF630021817E /* StructuresForModel.swift in Sources */,
+				5D86C12A2088FF630021817E /* ClassesForModel.swift in Sources */,
 				5D86C0FC208763AD0021817E /* AppDelegate.swift in Sources */,
 				5D86C11820879C8A0021817E /* Photo.swift in Sources */,
 				5D86C1242087B7090021817E /* PhotosCollectionViewController.swift in Sources */,

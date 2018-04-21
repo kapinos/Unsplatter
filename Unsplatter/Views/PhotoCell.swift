@@ -22,7 +22,9 @@ class PhotoCell: UICollectionViewCell {
     }
 
     func render(photo: Photo) {        
-        guard let url = URL(string: photo.urls.thumb) else { return }
+        guard let urls = photo.urls,
+            let thumb = urls.thumb,
+            let url = URL(string: thumb) else { return }
         
         downloadAndSetPhotoIntoCell(from: url)
         photoIdLabel.text = photo.id

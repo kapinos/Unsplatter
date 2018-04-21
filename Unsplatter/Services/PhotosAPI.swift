@@ -67,7 +67,13 @@ class PhotosAPI: NSObject {
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .custom(customDateHandler)
                 photoDetails = try? decoder.decode(PhotoDetails.self, from: data)
-                let error = (photoDetails == nil) ? String(data: data, encoding: .utf8) : nil
+                
+                var error: String?
+                if photoDetails == nil {
+                    let errorInfo = try? decoder.decode(ErrorData.self, from: data)
+//                    assert(errorInfo != nil)
+                    error = errorInfo?.errors.first ?? "Unknown Error"
+                }
                 completion(photoDetails, error)
             case .failure(let error):
                 print("Request failed with error: \(error)")

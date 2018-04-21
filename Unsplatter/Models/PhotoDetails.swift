@@ -11,10 +11,10 @@ import UIKit
 class PhotoDetails: NSObject, Codable {
     let id:         String
     let created:    Date?
-    let author:     User
-    let urls:       Urls
-    let links:      Links
-    let likesCount: Int
+    let author:     User?
+    let urls:       Urls?
+    let links:      Links?
+    let likesCount: Int?
     let location:   Location?
     
     enum CodingKeys: String, CodingKey {
@@ -31,10 +31,10 @@ class PhotoDetails: NSObject, Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         created = try container.decodeIfPresent(Date.self, forKey: .created)
-        author = try container.decode(User.self, forKey: .author)
-        urls = try container.decode(Urls.self, forKey: .urls)
-        links = try container.decode(Links.self, forKey: .links)
-        likesCount = try container.decode(Int.self, forKey: .likesCount)
+        author = try container.decodeIfPresent(User.self, forKey: .author)
+        urls = try container.decodeIfPresent(Urls.self, forKey: .urls)
+        links = try container.decodeIfPresent(Links.self, forKey: .links)
+        likesCount = try container.decodeIfPresent(Int.self, forKey: .likesCount)
         location = try container.decodeIfPresent(Location.self, forKey: .location)
     }
     
@@ -48,7 +48,3 @@ class PhotoDetails: NSObject, Codable {
         self.location   = location
     }
 }
-
-
-
-

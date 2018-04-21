@@ -14,7 +14,7 @@ class DetailsPhotoViewController: UIViewController {
 
     // MARK: - IBOutlets
     @IBOutlet weak var authorLabel: UILabel!
-    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var profileNameLabel: UILabel!
     @IBOutlet weak var authorProfileImageView: UIImageView!
     @IBOutlet weak var likesLabel: UILabel!
     @IBOutlet weak var photoImageView: UIImageView!
@@ -22,7 +22,7 @@ class DetailsPhotoViewController: UIViewController {
     
     // MARK: - Properties
     var photoId: String?
-    var photoImageSmall: UIImage?
+    var photoPriorImage: UIImage?
     
     private var photoDetails: PhotoDetails?
     private var blurEffectView: UIView?
@@ -33,18 +33,19 @@ class DetailsPhotoViewController: UIViewController {
         
         navigationController?.navigationBar.topItem?.title = ""
         
-        photoImageView.layer.masksToBounds = true
-        authorProfileImageView.layer.masksToBounds = true
-        authorProfileImageView.layer.cornerRadius = 0.5 * authorProfileImageView.bounds.size.width
-        
         configureLabels()
-        configureBlurEffectView()
+        configureAuthorImageView()
         
-        guard let id = photoId, let image = photoImageSmall else { return }
-        self.photoImageView.image = image
+        guard let photoId = photoId, let priorImage = photoPriorImage else { return }
+        configurePhotoImageView(image: priorImage)
 
-        
-        // fetch info about photo
+        fetchDetailsPhoto(by: photoId)
+    }
+}
+
+private extension DetailsPhotoViewController {
+    // fetch info about photo
+    func fetchDetailsPhoto(by id: String) {
         PhotosAPI.fetchPhotoDetails(by: id) { [weak self] details, error in
             guard error == nil else {
                 // TODO: - show alert
@@ -58,23 +59,32 @@ class DetailsPhotoViewController: UIViewController {
             }
             self?.photoDetails = details
             DispatchQueue.main.async {
-                self?.fetchParametersIntoUI()
+                self?.setDetailsPhotoIntoUI()
             }
         }
     }
-}
-
-private extension DetailsPhotoViewController {
-    func fetchParametersIntoUI() {
+    
+    func setDetailsPhotoIntoUI() {
         guard let details = photoDetails else { return }
         
-        authorLabel.text    = details.author.name
-        usernameLabel.text  = "@\(details.author.username)"
-        likesLabel.text     = "  ❤️ \(details.likesCount)  "
+        // details about author
+        if let author = details.author, let profileName = author.profileName {
+            authorLabel.text = author.name
+            profileNameLabel.text = "@\(profileName)"
+            
+            if let profileImage = author.profileImage {
+                downloadAndShowPhoto(from: profileImage.small, imageView: authorProfileImageView)
+            }
+        }
+        
+        // details about photo
+        likesLabel.text = "  ❤️ \(details.likesCount ?? 0)  "
         
         if let location = details.location?.title {
-            let title = !location.isEmpty ? "📍\(location)" : ""
-            locationButton.setTitle(title, for: .normal)
+            locationButton.setTitle("📍 \(location)", for: .normal)
+        } else {
+            locationButton.setTitle("📍 No location", for: .normal)
+            locationButton.isEnabled = false
         }
         
         if let date = details.created {
@@ -82,11 +92,14 @@ private extension DetailsPhotoViewController {
             dateFormatter.dateFormat = "dd-MM-yyyy"
             self.title = "created at: \(dateFormatter.string(from: date))"
         }
-        downloadAndShowPhoto(from: details.urls.regular, imageView: photoImageView)
-        downloadAndShowPhoto(from: details.author.profileImage.small, imageView: authorProfileImageView)
+        
+        if let urls = details.urls {
+            downloadAndShowPhoto(from: urls.regular, imageView: photoImageView)
+        }
     }
     
-    private func downloadAndShowPhoto(from url: String?, imageView: UIImageView) {
+    // implement reqest for download photo and set resultImage into imageView
+    func downloadAndShowPhoto(from url: String?, imageView: UIImageView) {
         guard let urlPath = URL(string: url!) else { return }
         
         Alamofire.request(urlPath).responseImage { response in
@@ -106,12 +119,20 @@ private extension DetailsPhotoViewController {
         likesLabel.layer.cornerRadius = 4.0
     }
     
-    func configureBlurEffectView() {
+    func configureAuthorImageView() {
+        authorProfileImageView.layer.masksToBounds = true
+        authorProfileImageView.layer.cornerRadius = 0.5 * authorProfileImageView.bounds.size.width
+    }
+    
+    func configurePhotoImageView(image: UIImage) {
+        photoImageView.layer.masksToBounds = true
+        photoImageView.image = image
+        
         let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.light)
         blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView?.frame = photoImageView.bounds
         blurEffectView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        photoImageView?.addSubview(blurEffectView!)
+        photoImageView.addSubview(blurEffectView!)
     }
     
     // TODO: Add download button handler

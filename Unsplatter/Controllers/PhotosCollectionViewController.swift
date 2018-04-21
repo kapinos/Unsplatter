@@ -13,6 +13,7 @@ class PhotosCollectionViewController: UICollectionViewController {
     // MARK: - Properties
     private var photos: [Photo] = []
     private var layout: PhotosLayout?
+    private var pageNumber = 1
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -25,23 +26,7 @@ class PhotosCollectionViewController: UICollectionViewController {
         
         collectionView?.contentInset = UIEdgeInsets(top: 23, left: 16, bottom: 10, right: 16)
         
-        PhotosAPI.fetchPhotos(pageNumber: 1, completion: { [weak self] photos, error  in
-            guard error == nil else {
-                //TODO: - show alert
-                print(error!)
-                return
-            }
-            
-            guard let photos = photos else {
-                print("Something went wrong")
-                return
-            }
-            
-            self?.photos = photos
-            DispatchQueue.main.async {
-                self?.collectionView?.reloadData()
-            }
-        })
+        fetchPhotosIntoCollectionView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -108,14 +93,35 @@ extension PhotosCollectionViewController {
             guard let destination = segue.destination as? DetailsPhotoViewController,
                 let data = sender as? (image: UIImage, photo: Photo) else { return }
             destination.photoId = data.photo.id
-            destination.photoImageSmall = data.image
+            destination.photoPriorImage = data.image
         }
     }
 }
 
 // MARK: - Private
 private extension PhotosCollectionViewController {
-    private func countItemWidth() -> CGFloat? {
+    // TODO: - fetch more than one page
+    func fetchPhotosIntoCollectionView() {
+        PhotosAPI.fetchPhotos(pageNumber: pageNumber, completion: { [weak self] photos, error  in
+            guard error == nil else {
+                //TODO: - show alert
+                print(error!)
+                return
+            }
+            
+            guard let photos = photos else {
+                print("Something went wrong")
+                return
+            }
+            
+            self?.photos = photos
+            DispatchQueue.main.async {
+                self?.collectionView?.reloadData()
+            }
+        })
+    }
+    
+    func countItemWidth() -> CGFloat? {
         guard let cv = collectionView else { return 0.0 }
         
         var width: CGFloat = 0.0

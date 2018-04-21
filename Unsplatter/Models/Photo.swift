@@ -10,7 +10,7 @@ import UIKit
 
 class Photo: NSObject, Codable {
     let id:     String
-    let urls:   Urls
+    let urls:   Urls?
     let width:  CGFloat
     let height: CGFloat
 
@@ -28,4 +28,3 @@ class Photo: NSObject, Codable {
         self.height = height
     }
 }
-
