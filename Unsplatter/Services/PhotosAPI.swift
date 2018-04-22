@@ -29,13 +29,17 @@ class PhotosAPI: NSObject {
             if let limitLoaders = response.response?.allHeaderFields["x-ratelimit-remaining"] as? String {
                 print("x-ratelimit-remaining: \(limitLoaders)") // LOG
             }
-            
-            var photos: [Photo]?
 
+            // check for result and return [Photo]? and error(String?)
             switch response.result {
             case .success(let data):
-                 photos = try? JSONDecoder().decode([Photo].self, from: data)
-                 let error = (photos == nil) ? String(data: data, encoding: .utf8) : nil
+                let photos: [Photo]? = try? JSONDecoder().decode([Photo].self, from: data)
+                 
+                 var error: String?
+                 if photos == nil {
+                    let errorInfo = try? JSONDecoder().decode(ErrorData.self, from: data)
+                    error = errorInfo?.errors.first ?? "Unknown Error"
+                 }
                  completion(photos, error)
             case .failure(let error):
                 print("Request failed with error: \(error)")
@@ -61,17 +65,17 @@ class PhotosAPI: NSObject {
                 print("x-ratelimit-remaining: \(limitLoaders)")
             }
             
-            var photoDetails: PhotoDetails?
+            // check for result and return PhotoDetails? and error(String?)
             switch response.result {
             case .success(let data):
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .custom(customDateHandler)
-                photoDetails = try? decoder.decode(PhotoDetails.self, from: data)
+                let photoDetails: PhotoDetails? = try? decoder.decode(PhotoDetails.self, from: data)
                 
                 var error: String?
                 if photoDetails == nil {
                     let errorInfo = try? decoder.decode(ErrorData.self, from: data)
-//                    assert(errorInfo != nil)
+                    assert(errorInfo != nil)
                     error = errorInfo?.errors.first ?? "Unknown Error"
                 }
                 completion(photoDetails, error)

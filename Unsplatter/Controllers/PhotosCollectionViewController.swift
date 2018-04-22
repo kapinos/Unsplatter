@@ -36,13 +36,6 @@ class PhotosCollectionViewController: UICollectionViewController {
        self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        
-//        // Show the navigation bar on other view controllers
-//        self.navigationController?.setNavigationBarHidden(false, animated: animated)
-//    }
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         layout?.invalidateLayout()
     }
@@ -104,8 +97,13 @@ private extension PhotosCollectionViewController {
     func fetchPhotosIntoCollectionView() {
         PhotosAPI.fetchPhotos(pageNumber: pageNumber, completion: { [weak self] photos, error  in
             guard error == nil else {
-                //TODO: - show alert
-                print(error!)
+                // show alert and try fetch photos again
+                let ac = UIAlertController(title: "Error during open gallery", message: error, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Try again", style: .default, handler: { [weak self] _ in
+                    self?.fetchPhotosIntoCollectionView()
+                }))
+                self?.present(ac, animated: true)
+                
                 return
             }
             

@@ -37,9 +37,9 @@ class DetailsPhotoViewController: UIViewController {
         configureLabels()
         configureAuthorImageView()
         configureProgressView()
+        
         guard let photoId = photoId, let priorImage = photoPriorImage else { return }
         configurePhotoImageView(image: priorImage)
-
         fetchDetailsPhoto(by: photoId)
     }
     
@@ -79,7 +79,7 @@ extension DetailsPhotoViewController {
 
 
 private extension DetailsPhotoViewController {
-    // download opener image into photo gallery
+    // download opened image into photo gallery
     func downloadImage(completion: @escaping (UIImage) -> ()) {
         progressView.isHidden = false
         
@@ -98,10 +98,14 @@ private extension DetailsPhotoViewController {
     
     // fetch info about photo
     func fetchDetailsPhoto(by id: String) {
-        PhotosAPI.fetchPhotoDetails(by: id) { [weak self] details, error in
+        PhotosAPI.fetchPhotoDetails(by: "id99") { [weak self] details, error in
             guard error == nil else {
-                // TODO: - show alert
-                print(error!)
+                // show alert and return back
+                let ac = UIAlertController(title: "Error during open photo", message: error, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Ok", style: .default, handler: { [weak self] _ in
+                    self?.navigationController?.popViewController(animated: true)
+                }))
+                self?.present(ac, animated: true)
                 return
             }
             
@@ -193,3 +197,5 @@ private extension DetailsPhotoViewController {
         progressView.tintColor = UIColor.Blue.defaultBlue
     }
 }
+
+
