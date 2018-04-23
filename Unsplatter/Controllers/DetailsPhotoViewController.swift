@@ -77,7 +77,6 @@ extension DetailsPhotoViewController {
     }
 }
 
-
 private extension DetailsPhotoViewController {
     // download opened image into photo gallery
     func downloadImage(completion: @escaping (UIImage) -> ()) {
@@ -98,7 +97,7 @@ private extension DetailsPhotoViewController {
     
     // fetch info about photo
     func fetchDetailsPhoto(by id: String) {
-        PhotosAPI.fetchPhotoDetails(by: "id99") { [weak self] details, error in
+        PhotosAPI.fetchPhotoDetails(by: id) { [weak self] details, error in
             guard error == nil else {
                 // show alert and return back
                 let ac = UIAlertController(title: "Error during open photo", message: error, preferredStyle: .alert)

@@ -1,6 +1,8 @@
 # Unsplatter
 PixelTeh test task
 
+![](https://github.com/kapinos/FourInARow/blob/master/resizedRecord.gif)
+
 ![alt text](https://github.com/kapinos/Unsplatter/blob/master/errorDuringGalleryRetrieve.png)
 ![alt text](https://github.com/kapinos/Unsplatter/blob/master/errorDuringPhotoRetrieve.png)
 

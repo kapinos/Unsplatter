@@ -13,11 +13,15 @@ class PhotosCollectionViewController: UICollectionViewController {
     // MARK: - Properties
     private var photos: [Photo] = []
     private var layout: PhotosLayout?
+    
     private var pageNumber = 1
+    private var isPageLoading = false
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        configureStatusBar()
         
         if let layout = collectionView?.collectionViewLayout as? PhotosLayout {
             self.layout = layout
@@ -26,7 +30,15 @@ class PhotosCollectionViewController: UICollectionViewController {
         
         collectionView?.contentInset = UIEdgeInsets(top: 23, left: 16, bottom: 10, right: 16)
         
-        fetchPhotosIntoCollectionView()
+        fetchPhotosFromAPI(by: pageNumber) { [weak self] fetchedPhotos in
+            guard let indexes = self?.getIndexes(for: fetchedPhotos) else { return }
+            self?.photos.append(contentsOf: fetchedPhotos)
+            
+            DispatchQueue.main.async {
+                self?.collectionView?.insertItems(at: indexes)
+                self?.isPageLoading = false
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -37,6 +49,8 @@ class PhotosCollectionViewController: UICollectionViewController {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        // TODO: - show the last viewed photo when device rotated
+        collectionView?.reloadData()
         layout?.invalidateLayout()
     }
 }
@@ -79,6 +93,49 @@ extension PhotosCollectionViewController {
     }
 }
 
+// MARK: - UIScrollViewDelegate
+extension PhotosCollectionViewController {
+    // in the end of the scrollView download another page with photos
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentSize.equalTo(.zero) {
+            return
+        }
+        if isPageLoading {
+            return
+        }
+        
+        let isBottomAchieved = (scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.bounds.height)
+        
+        if !isBottomAchieved {
+            return
+        }
+
+        isPageLoading = true
+        pageNumber += 1
+        
+        // add ActivityIndicator
+        let activityView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        activityView.color = UIColor.Blue.defaultBlue
+
+        activityView.center = CGPoint(x: view.bounds.width / 2.0,
+                                      y: view.bounds.height - activityView.bounds.height)
+        activityView.startAnimating()
+        view.addSubview(activityView)
+        
+        fetchPhotosFromAPI(by: pageNumber) { [weak self] fetchedPhotos in
+            guard let indexes = self?.getIndexes(for: fetchedPhotos) else { return }
+            self?.photos.append(contentsOf: fetchedPhotos)
+            
+            DispatchQueue.main.async {
+                self?.collectionView?.insertItems(at: indexes)
+                self?.isPageLoading = false
+                
+                activityView.stopAnimating()
+            }
+        }
+    }
+}
+
 // MARK: - Navigation
 extension PhotosCollectionViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -93,29 +150,26 @@ extension PhotosCollectionViewController {
 
 // MARK: - Private
 private extension PhotosCollectionViewController {
-    // TODO: - fetch more than one page
-    func fetchPhotosIntoCollectionView() {
-        PhotosAPI.fetchPhotos(pageNumber: pageNumber, completion: { [weak self] photos, error  in
+    func fetchPhotosFromAPI(by page: Int, completion: @escaping ([Photo]) -> ()) {
+        
+        //typealias FetchingErrorHandler = (_ message: String?) -> ()
+        PhotosAPI.fetchPhotos(pageNumber: page, completion: { [weak self] photos, error  in
             guard error == nil else {
-                // show alert and try fetch photos again
+                // show alert and try to fetch photos again
                 let ac = UIAlertController(title: "Error during open gallery", message: error, preferredStyle: .alert)
                 ac.addAction(UIAlertAction(title: "Try again", style: .default, handler: { [weak self] _ in
-                    self?.fetchPhotosIntoCollectionView()
+                    // TODO: - try do download again
+                    // self?.fetchPhotosFromApi(page: page)
                 }))
                 self?.present(ac, animated: true)
-                
                 return
             }
             
-            guard let photos = photos else {
+            guard let fetchedPhotos = photos else {
                 print("Something went wrong")
                 return
             }
-            
-            self?.photos = photos
-            DispatchQueue.main.async {
-                self?.collectionView?.reloadData()
-            }
+            completion(fetchedPhotos)
         })
     }
     
@@ -129,6 +183,25 @@ private extension PhotosCollectionViewController {
             width = (cv.frame.width - (cv.contentInset.left + cv.contentInset.right + 10)) / CGFloat(Constants.numberOfColumnsForPortraitMode)
         }
         return width
+    }
+    
+    // count [IndexPath] for new fetched photos
+    func getIndexes(for fetchedPhotos: [Photo]) -> [IndexPath] {
+        var indexes: [IndexPath] = []
+        let count = photos.count
+        
+        for i in count ..< (fetchedPhotos.count + count) {
+            indexes.append(IndexPath(item: i, section: 0))
+        }
+        return indexes
+    }
+    
+    // configure status bar color without showing navigationBar
+    func configureStatusBar() {
+        let statusBarView = UIView(frame: UIApplication.shared.statusBarFrame)
+        let statusBarColor = UIColor.Gray.lightGray
+        statusBarView.backgroundColor = statusBarColor
+        view.addSubview(statusBarView)
     }
 }
 

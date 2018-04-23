@@ -32,6 +32,9 @@ class PhotoCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        
+        photoImageView.image = nil
+        photoIdLabel.text = ""
     }
     
     private func downloadAndSetPhotoIntoCell(from url: URL) {
