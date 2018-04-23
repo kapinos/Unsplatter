@@ -17,6 +17,7 @@ class DetailsPhotoViewController: UIViewController {
     @IBOutlet private weak var profileNameLabel: UILabel!
     @IBOutlet private weak var authorProfileImageView: UIImageView!
     @IBOutlet private weak var likesLabel: UILabel!
+    @IBOutlet private weak var zoomingScrollView: UIScrollView!
     @IBOutlet private weak var photoImageView: UIImageView!
     @IBOutlet private weak var locationButton: UIButton!
     @IBOutlet private weak var progressView: UIProgressView!
@@ -37,6 +38,7 @@ class DetailsPhotoViewController: UIViewController {
         configureLabels()
         configureAuthorImageView()
         configureProgressView()
+        configureZoomingScrollView()
         
         guard let photoId = photoId, let priorImage = photoPriorImage else { return }
         configurePhotoImageView(image: priorImage)
@@ -46,8 +48,26 @@ class DetailsPhotoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        // Hide the navigation bar on the this view controller
+        // Make visible the navigation bar on the this view controller
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    // Managed layouts for scrollView with imageView hen device had been rotated
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        updateLayoutsForScrollView()
+    }
+}
+
+// MARK: - UIScrollViewDelegate
+extension DetailsPhotoViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return photoImageView
+    }
+    
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) / 2.0, 0)
+        let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) / 2.0, 0)
+        scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
     }
 }
 
@@ -77,8 +97,9 @@ extension DetailsPhotoViewController {
     }
 }
 
+// MARK: - Private
 private extension DetailsPhotoViewController {
-    // download opened image into photo gallery
+    // Download opened image into photo gallery
     func downloadImage(completion: @escaping (UIImage) -> ()) {
         progressView.isHidden = false
         
@@ -95,7 +116,7 @@ private extension DetailsPhotoViewController {
         }
     }
     
-    // fetch info about photo
+    // Fetch info about photo
     func fetchDetailsPhoto(by id: String) {
         PhotosAPI.fetchPhotoDetails(by: id) { [weak self] details, error in
             guard error == nil else {
@@ -153,7 +174,7 @@ private extension DetailsPhotoViewController {
         }
     }
     
-    // implement reqest for download photo and set resultImage into imageView
+    // Implement request for download photo and set resultImage into imageView
     func downloadAndShowPhoto(from url: String?, imageView: UIImageView) {
         guard let urlPath = URL(string: url!) else { return }
         
@@ -166,6 +187,21 @@ private extension DetailsPhotoViewController {
                 })
             }
         }
+    }
+    
+    // Update layouts for scrollView content
+    func updateLayoutsForScrollView() {
+        zoomingScrollView.contentSize = zoomingScrollView.bounds.size
+        
+        let widthRatio = zoomingScrollView.bounds.size.width / photoImageView.bounds.size.width
+        let heightRatio = zoomingScrollView.bounds.size.height / photoImageView.bounds.size.height
+        
+        zoomingScrollView.zoomScale = min(widthRatio, heightRatio)
+        zoomingScrollView.contentInset = UIEdgeInsets(top: (zoomingScrollView.bounds.size.height - photoImageView.frame.size.height) / 2,
+                                                      left: (zoomingScrollView.bounds.size.width - photoImageView.frame.size.width) / 2,
+                                                      bottom: 0, right: 0)
+        
+        photoImageView.contentMode = .scaleAspectFit
     }
     
     func configureLabels() {
@@ -194,6 +230,12 @@ private extension DetailsPhotoViewController {
         progressView.progress = 0.0
         progressView.isHidden = true
         progressView.tintColor = UIColor.Blue.defaultBlue
+    }
+    
+    func configureZoomingScrollView() {
+        zoomingScrollView.delegate = self
+        zoomingScrollView.minimumZoomScale = 0.75
+        zoomingScrollView.maximumZoomScale = 4
     }
 }
 

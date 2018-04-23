@@ -16,11 +16,13 @@ class PhotosCollectionViewController: UICollectionViewController {
     
     private var pageNumber = 1
     private var isPageLoading = false
+    private var statusBarView = UIView()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.addSubview(statusBarView)
         configureStatusBar()
         
         if let layout = collectionView?.collectionViewLayout as? PhotosLayout {
@@ -49,9 +51,22 @@ class PhotosCollectionViewController: UICollectionViewController {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        // TODO: - show the last viewed photo when device rotated
+        // TODO: - scroll the last viewed photo when device had been rotated
         collectionView?.reloadData()
         layout?.invalidateLayout()
+        
+        switch UIDevice.current.orientation {
+        case .portrait:
+            if statusBarView.frame.equalTo(CGRect.zero) {
+                configureStatusBar()
+            } else {
+                statusBarView.backgroundColor = UIColor.Gray.lightGray
+            }
+        case .landscapeLeft, .landscapeRight:
+            statusBarView.backgroundColor = .clear
+        default: return
+        }
+        
     }
 }
 
@@ -198,10 +213,9 @@ private extension PhotosCollectionViewController {
     
     // configure status bar color without showing navigationBar
     func configureStatusBar() {
-        let statusBarView = UIView(frame: UIApplication.shared.statusBarFrame)
-        let statusBarColor = UIColor.Gray.lightGray
-        statusBarView.backgroundColor = statusBarColor
-        view.addSubview(statusBarView)
+        statusBarView.frame = CGRect(origin: UIApplication.shared.statusBarFrame.origin,
+                                     size: UIApplication.shared.statusBarFrame.size)
+        statusBarView.backgroundColor = UIColor.Gray.lightGray
     }
 }
 

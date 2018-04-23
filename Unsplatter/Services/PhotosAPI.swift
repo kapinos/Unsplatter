@@ -21,7 +21,7 @@ class PhotosAPI: NSObject {
         
         let url = "\(API.sitePath)/photos/?client_id=\(API.clientId)"
         let parameters: [String: Any] = [
-            "per_page": 30,
+            "per_page": 15,
             "page":     pageNumber
         ]
         

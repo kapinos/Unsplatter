@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -66,6 +66,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		5D32A53A208E7132005871BB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5D86C102208763B10021817E /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		5D86C0EF208763AD0021817E = {
 			isa = PBXGroup;
 			children = (
@@ -92,6 +100,7 @@
 				5D86C113208774B90021817E /* Controllers */,
 				5D86C114208774CD0021817E /* Views */,
 				5D0956A7208E06B2005CA693 /* Extensions */,
+				5D32A53A208E7132005871BB /* Resources */,
 				5D86C1222087B6240021817E /* Layouts */,
 				5D86C10D208763BC0021817E /* Supporting Files */,
 			);
@@ -102,7 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				5D86C0FB208763AD0021817E /* AppDelegate.swift */,
-				5D86C102208763B10021817E /* Assets.xcassets */,
 				5D86C104208763B20021817E /* LaunchScreen.storyboard */,
 				5D86C107208763B20021817E /* Info.plist */,
 			);
@@ -205,11 +213,12 @@
 				TargetAttributes = {
 					5D86C0F7208763AD0021817E = {
 						CreatedOnToolsVersion = 9.3;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = 5D86C0F3208763AD0021817E /* Build configuration list for PBXProject "Unsplatter" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -429,8 +438,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -444,10 +452,7 @@
 				DEVELOPMENT_TEAM = G9UHR5NE37;
 				INFOPLIST_FILE = "$(SRCROOT)/Unsplatter/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ankis.Unsplatter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -464,10 +469,7 @@
 				DEVELOPMENT_TEAM = G9UHR5NE37;
 				INFOPLIST_FILE = "$(SRCROOT)/Unsplatter/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ankis.Unsplatter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

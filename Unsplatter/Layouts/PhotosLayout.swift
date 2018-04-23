@@ -34,8 +34,7 @@ class PhotosLayout: UICollectionViewLayout {
     
     // return the size of collectionView contents
     override var collectionViewContentSize: CGSize {
-        let placeForActivityIndicator: CGFloat = 50.0
-        return CGSize(width: contentWidth, height: contentHeight + placeForActivityIndicator)
+        return CGSize(width: contentWidth, height: contentHeight)
     }
     
     // calculate an instance of CollectionViewLayoutAttributes for every item in layout
@@ -87,7 +86,6 @@ class PhotosLayout: UICollectionViewLayout {
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        
         var visibleLayoutAttributes = [UICollectionViewLayoutAttributes]()
         
         // Loop through the cache and look for items in the rect

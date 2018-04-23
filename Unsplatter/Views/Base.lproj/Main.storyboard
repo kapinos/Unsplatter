@@ -10,7 +10,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Photos-->
+        <!--Photos Collection View Controller-->
         <scene sceneID="Dgq-Kx-YqE">
             <objects>
                 <collectionViewController id="bbk-ce-P6h" customClass="PhotosCollectionViewController" customModule="Unsplatter" customModuleProvider="target" sceneMemberID="viewController">
@@ -60,7 +60,7 @@
                             <outlet property="delegate" destination="bbk-ce-P6h" id="eAz-rx-UWN"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="Photos" id="tWR-E9-uZE"/>
+                    <navigationItem key="navigationItem" id="tWR-E9-uZE"/>
                     <connections>
                         <segue destination="bAk-cF-ETL" kind="show" identifier="showPhotoDetailsSegue" id="9hi-Dj-2pS"/>
                     </connections>
@@ -129,9 +129,22 @@
                                             <constraint firstAttribute="height" constant="45" id="9FU-tE-Jcr"/>
                                         </constraints>
                                     </stackView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="no-photo" translatesAutoresizingMaskIntoConstraints="NO" id="89s-ht-GD0">
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6MT-p3-eTP">
                                         <rect key="frame" x="0.0" y="60" width="345" height="468"/>
-                                    </imageView>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="no-photo" translatesAutoresizingMaskIntoConstraints="NO" id="uca-lX-bjj">
+                                                <rect key="frame" x="0.0" y="0.0" width="345" height="468"/>
+                                            </imageView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="uca-lX-bjj" secondAttribute="bottom" id="7uJ-rA-7OY"/>
+                                            <constraint firstAttribute="trailing" secondItem="uca-lX-bjj" secondAttribute="trailing" id="BwN-x4-Z3Q"/>
+                                            <constraint firstItem="uca-lX-bjj" firstAttribute="leading" secondItem="6MT-p3-eTP" secondAttribute="leading" id="U4e-PN-0qn"/>
+                                            <constraint firstItem="uca-lX-bjj" firstAttribute="centerX" secondItem="6MT-p3-eTP" secondAttribute="centerX" id="dF7-Ei-hs4"/>
+                                            <constraint firstItem="uca-lX-bjj" firstAttribute="centerY" secondItem="6MT-p3-eTP" secondAttribute="centerY" id="dqO-6t-hNZ"/>
+                                            <constraint firstItem="uca-lX-bjj" firstAttribute="top" secondItem="6MT-p3-eTP" secondAttribute="top" id="hIQ-zq-FH4"/>
+                                        </constraints>
+                                    </scrollView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PC8-9m-sVt">
                                         <rect key="frame" x="0.0" y="543" width="345" height="30"/>
                                         <constraints>
@@ -157,7 +170,7 @@
                         <viewLayoutGuide key="safeArea" id="2qI-LI-tZq"/>
                     </view>
                     <navigationItem key="navigationItem" title="Title" id="gDq-XO-u1Y">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="downloadPhoto" style="plain" id="teX-0d-G0c">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="downloadPhoto" id="teX-0d-G0c">
                             <connections>
                                 <action selector="downloadBarButtonPressed:" destination="bAk-cF-ETL" id="CmZ-Xs-vw5"/>
                             </connections>
@@ -168,9 +181,10 @@
                         <outlet property="authorProfileImageView" destination="Z2g-UO-e2u" id="dJm-Eh-0Xd"/>
                         <outlet property="likesLabel" destination="FBW-oi-fIH" id="W8l-xB-GjH"/>
                         <outlet property="locationButton" destination="PC8-9m-sVt" id="dFP-9I-dUX"/>
-                        <outlet property="photoImageView" destination="89s-ht-GD0" id="nZr-MA-00Z"/>
+                        <outlet property="photoImageView" destination="uca-lX-bjj" id="Lmm-H7-hMf"/>
                         <outlet property="profileNameLabel" destination="ZAP-2K-ixp" id="kJS-aN-vXa"/>
                         <outlet property="progressView" destination="bDA-eN-V7Z" id="fKm-Rc-9aB"/>
+                        <outlet property="zoomingScrollView" destination="6MT-p3-eTP" id="c7I-Xq-aD3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EB7-D0-osq" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -193,7 +207,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KuV-Ym-PnA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="904.79999999999995" y="-55.322338830584712"/>
+            <point key="canvasLocation" x="1226" y="-53"/>
         </scene>
     </scenes>
     <resources>
