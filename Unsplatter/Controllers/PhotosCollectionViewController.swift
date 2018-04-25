@@ -145,9 +145,6 @@ extension PhotosCollectionViewController: UISearchBarDelegate {
         fetchPhotosFromAPI(by: queryWord, page: pageNumber) { [weak self] photosByWord in
             self?.photosByWord = photosByWord
             
-            print("totalResults: \(String(describing: photosByWord.totalResults))")
-            print("totalPages: \(String(describing: photosByWord.totalPages))")
-            
             guard let fetchedPhotos = photosByWord.photos else { return }
             self?.photos = fetchedPhotos
             

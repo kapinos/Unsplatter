@@ -30,7 +30,8 @@ class DetailsPhotoViewController: UIViewController {
 
     private var photoDetails: PhotoDetails?
     private var blurEffectView: UIView?
-    private var fakeLikesAmount = 0
+    private var isUserLiked = false
+//    private var fakeLikesAmount = 0
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -81,8 +82,12 @@ extension DetailsPhotoViewController: UIScrollViewDelegate {
 extension DetailsPhotoViewController {
     // change likes amount in button
     @IBAction func likesButtonPressed(_ sender: UIButton) {
-        fakeLikesAmount += 1
-        sender.setTitle("  ❤️ \(fakeLikesAmount)  ", for: .normal)
+        guard var likes = photoDetails?.likesCount else { return }
+        
+        likes = isUserLiked ? likes : (likes + 1)
+        isUserLiked = !isUserLiked
+        
+        likesButton.setTitle("  ❤️ \(likes)  ", for: .normal)
         sender.pulsate()
     }
     
@@ -173,8 +178,7 @@ private extension DetailsPhotoViewController {
         
         // details about photo
         if let likes = details.likesCount {
-            fakeLikesAmount = likes
-            likesButton.setTitle("  ❤️ \(fakeLikesAmount)  ", for: .normal)
+            likesButton.setTitle("  ❤️ \(likes)  ", for: .normal)
         }
         
         // locationButton

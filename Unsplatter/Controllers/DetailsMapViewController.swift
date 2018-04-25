@@ -22,7 +22,8 @@ class DetailsMapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guard photoDetails != nil else { return }
+        guard let details = photoDetails, let title = details.location?.title else { return }
+        self.title = title
         configureMapAndAnnotation()
     }
 }
