@@ -16,23 +16,27 @@ class DetailsPhotoViewController: UIViewController {
     @IBOutlet private weak var authorLabel: UILabel!
     @IBOutlet private weak var profileNameLabel: UILabel!
     @IBOutlet private weak var authorProfileImageView: UIImageView!
-    @IBOutlet private weak var likesLabel: UILabel!
+    @IBOutlet weak var likesButton: UIButton!
+    @IBOutlet private weak var dateCreationLabel: UILabel!
     @IBOutlet private weak var zoomingScrollView: UIScrollView!
     @IBOutlet private weak var photoImageView: UIImageView!
     @IBOutlet private weak var locationButton: UIButton!
     @IBOutlet private weak var progressView: UIProgressView!
+    @IBOutlet private weak var zoomingSignImageView: UIImageView!
     
     // MARK: - Properties
     var photoId: String?
     var photoPriorImage: UIImage?
-    
+
     private var photoDetails: PhotoDetails?
     private var blurEffectView: UIView?
+    private var fakeLikesAmount = 0
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = ""
         navigationController?.navigationBar.topItem?.title = ""
         
         configureLabels()
@@ -68,11 +72,25 @@ extension DetailsPhotoViewController: UIScrollViewDelegate {
         let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) / 2.0, 0)
         let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) / 2.0, 0)
         scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, 0, 0)
+                
+        zoomingSignImageView.isHidden = true
     }
 }
 
 // MARK: - User Interactions
 extension DetailsPhotoViewController {
+    // change likes amount in button
+    @IBAction func likesButtonPressed(_ sender: UIButton) {
+        fakeLikesAmount += 1
+        sender.setTitle("  ❤️ \(fakeLikesAmount)  ", for: .normal)
+        sender.pulsate()
+    }
+    
+    @IBAction func locationButtonPressed(_ sender: UIButton) {
+        guard let photo = photoDetails else { return }
+        performSegue(withIdentifier: Constants.showPhotoOnMapSegue, sender: photo)
+    }
+    
     @IBAction func downloadBarButtonPressed(_ sender: UIBarButtonItem) {
         downloadImage { image in
             UIImageWriteToSavedPhotosAlbum(image, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
@@ -154,21 +172,35 @@ private extension DetailsPhotoViewController {
         }
         
         // details about photo
-        likesLabel.text = "  ❤️ \(details.likesCount ?? 0)  "
+        if let likes = details.likesCount {
+            fakeLikesAmount = likes
+            likesButton.setTitle("  ❤️ \(fakeLikesAmount)  ", for: .normal)
+        }
         
-        if let location = details.location?.title {
-            locationButton.setTitle("📍 \(location)", for: .normal)
+        // locationButton
+        if let locationTitle = details.location?.title {
+            locationButton.setTitle("📍 \(locationTitle)", for: .normal)
+            
+            if details.location?.position?.latitude != nil, details.location?.position?.longitude != nil {
+                locationButton.isEnabled = true
+            } else {
+                locationButton.setTitleColor(UIColor.Gray.nickelGray, for: .normal)
+                locationButton.isEnabled = false
+            }
         } else {
             locationButton.setTitle("📍 No location", for: .normal)
+            locationButton.setTitleColor(UIColor.Gray.nickelGray, for: .normal)
             locationButton.isEnabled = false
         }
         
+        // dateCreationLabel
         if let date = details.created {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd-MM-yyyy"
-            self.title = "created at: \(dateFormatter.string(from: date))"
+            dateCreationLabel.text = "created at: \(dateFormatter.string(from: date))"
         }
         
+        // show photo
         if let urls = details.urls {
             downloadAndShowPhoto(from: urls.regular, imageView: photoImageView)
         }
@@ -205,9 +237,9 @@ private extension DetailsPhotoViewController {
     }
     
     func configureLabels() {
-        likesLabel.layer.borderColor = UIColor.lightGray.cgColor
-        likesLabel.layer.borderWidth = 0.7
-        likesLabel.layer.cornerRadius = 4.0
+        likesButton.layer.borderColor  = UIColor.lightGray.cgColor
+        likesButton.layer.borderWidth  = 0.7
+        likesButton.layer.cornerRadius = 4.0
     }
     
     func configureAuthorImageView() {
@@ -236,6 +268,17 @@ private extension DetailsPhotoViewController {
         zoomingScrollView.delegate = self
         zoomingScrollView.minimumZoomScale = 0.75
         zoomingScrollView.maximumZoomScale = 4
+    }
+}
+
+// MARK: - Navigation
+extension DetailsPhotoViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Constants.showPhotoOnMapSegue {
+            guard let destination = segue.destination as? DetailsMapViewController,
+                let data = sender as? PhotoDetails else { return }
+            destination.photoDetails = data
+        }
     }
 }
 

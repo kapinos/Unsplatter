@@ -17,7 +17,7 @@ class PhotosLayout: UICollectionViewLayout {
     weak var delegate: PhotosLayoutDelegate!
     
     // properties for configuring the layout
-    private var cellPadding: CGFloat = 6
+    private var cellPadding: CGFloat = Constants.collectionCellPadding
     
     // array for cache calculated attributes
     private var cache = [UICollectionViewLayoutAttributes]()

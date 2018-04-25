@@ -21,5 +21,10 @@ extension UIColor {
                                        green:         240/255,
                                        blue:          240/255,
                                        alpha:         1)
+        
+        static let nickelGray = UIColor(displayP3Red:  146/255,
+                                        green:         146/255,
+                                        blue:          146/255,
+                                        alpha:         1)
     }
 }

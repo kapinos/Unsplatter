@@ -17,12 +17,13 @@ class PhotosAPI: NSObject {
     }
     
     // fetching array of Photo
-    class func fetchPhotos(pageNumber: Int, completion: @escaping ([Photo]?, String?) -> ()) {
+    class func fetchPhotos(pageNumber: Int, perPage: Int, completion: @escaping ([Photo]?, String?) -> ()) {
         
-        let url = "\(API.sitePath)/photos/?client_id=\(API.clientId)"
+        let url = "\(API.sitePath)/photos/?"
         let parameters: [String: Any] = [
-            "per_page": 15,
-            "page":     pageNumber
+            "page":         pageNumber,
+            "per_page":     perPage,
+            "client_id":    API.clientId
         ]
         
         Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).responseData { response in
@@ -33,6 +34,7 @@ class PhotosAPI: NSObject {
             // check for result and return [Photo]? and error(String?)
             switch response.result {
             case .success(let data):
+                
                 let photos: [Photo]? = try? JSONDecoder().decode([Photo].self, from: data)
                  
                  var error: String?
@@ -79,6 +81,40 @@ class PhotosAPI: NSObject {
                     error = errorInfo?.errors.first ?? "Unknown Error"
                 }
                 completion(photoDetails, error)
+            case .failure(let error):
+                print("Request failed with error: \(error)")
+            }
+        }
+    }
+    
+    
+    // fetching array of Photo by word
+    class func fetchPhotosByWord(queryWord: String, pageNumber: Int, perPage: Int, completion: @escaping (PhotosByWord?, String?) -> ()) {
+
+        let url = "https://api.unsplash.com/search/photos/?query=\(queryWord)"
+        let parameters: [String: Any] = [
+            "per_page":     30,
+            "page":         pageNumber,
+            "client_id":    API.clientId
+        ]
+        
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).responseData { response in
+            if let limitLoaders = response.response?.allHeaderFields["x-ratelimit-remaining"] as? String {
+                print("x-ratelimit-remaining: \(limitLoaders)") // LOG
+            }
+            
+            // check for result and return PhotosByWord? and error(String?)
+            switch response.result {
+            case .success(let data):
+                
+                let photosByWord: PhotosByWord? = try? JSONDecoder().decode(PhotosByWord.self, from: data)
+                
+                var error: String?
+                if photosByWord == nil {
+                    let errorInfo = try? JSONDecoder().decode(ErrorData.self, from: data)
+                    error = errorInfo?.errors.first ?? "Unknown Error"
+                }
+                completion(photosByWord, error)
             case .failure(let error):
                 print("Request failed with error: \(error)")
             }

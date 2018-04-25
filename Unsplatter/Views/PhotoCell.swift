@@ -13,7 +13,6 @@ import AlamofireImage
 class PhotoCell: UICollectionViewCell {
     
     @IBOutlet weak var photoImageView: UIImageView!
-    @IBOutlet weak var photoIdLabel: UILabel!
  
     var image: UIImage? {
         get {
@@ -26,18 +25,15 @@ class PhotoCell: UICollectionViewCell {
             let thumb = urls.thumb,
             let url = URL(string: thumb) else { return }
         
-        downloadAndSetPhotoIntoCell(from: url)
-        photoIdLabel.text = photo.id
+        downloadAndSetPhoto(from: url)
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         photoImageView.image = nil
-        photoIdLabel.text = ""
     }
     
-    private func downloadAndSetPhotoIntoCell(from url: URL) {
+    private func downloadAndSetPhoto(from url: URL) {
         Alamofire.request(url).responseImage { response in
             guard let image = response.result.value else { return }
             DispatchQueue.main.async {

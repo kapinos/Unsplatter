@@ -117,22 +117,30 @@ class Links: Codable {
 }
 
 class Location: Codable {
-    let title: String
+    let title: String?
+    let city: String?
+    let country: String?
     let position: Position?
     
     enum CodingKeys: String, CodingKey {
         case title
+        case city
+        case country
         case position
     }
     
-    init(title: String, position: Position) {
-        self.title = title
+    init(title: String, city: String, country: String, position: Position) {
+        self.title    = title
+        self.city     = city
+        self.country  = country
         self.position = position
     }
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        title = try container.decode(String.self, forKey: .title)
+        title = try container.decodeIfPresent(String.self, forKey: .title)
+        city = try container.decodeIfPresent(String.self, forKey: .city)
+        country = try container.decodeIfPresent(String.self, forKey: .country)
         position = try container.decodeIfPresent(Position.self, forKey: .position)
     }
 }
